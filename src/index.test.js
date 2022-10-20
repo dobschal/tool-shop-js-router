@@ -56,6 +56,19 @@ describe("Router", () => {
         expect(document.body.children[0].children[0].innerText).toBe("yeah");
     });
 
+    it("should contain the pageElement on the router instance", () => {
+        const router = Router({
+            routes: {
+                "*": {
+                    page: () => Widget({
+                        text: "yeah"
+                    })
+                }
+            }
+        });
+        expect(router.pageElement.innerText).toBe("yeah");
+    });
+
     it("should render the page without layout to the DOM", () => {
         Router({
             routes: {
@@ -80,7 +93,7 @@ describe("Router", () => {
                 page: Widget
             }
         };
-        const parsedConfig = _parseRoutesConfig(config);
+        const parsedConfig = _parseRoutesConfig(config, {});
         expect(typeof parsedConfig.about).toBe("function");
         expect(Object.keys(parsedConfig).length).toBe(2);
     });

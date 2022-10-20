@@ -7,6 +7,8 @@ import Navigo from "navigo";
 
 export { RouterLink } from "./RouterLink.js";
 
+let activeLayout;
+
 /**
  * Applies some special route handling and returns an instance of the Navigo router.
  * @param {RouterConfig} config 
@@ -17,6 +19,7 @@ export function Router(config) {
     if ("hooks" in config) {
         router.hooks(config.hooks);
     }
+    router.pageElement = undefined;
     router.on(_parseRoutesConfig(config.routes, router));
     router.resolve();
     return router;
@@ -60,9 +63,7 @@ export function _switchPage(Layout, Page, router) {
     // If no layout is set, add page to body directly
     // and remove potentially existing rendered layout
     if (typeof Layout === "undefined") {
-        if (router.layoutElement instanceof HTMLElement) {
-            router.layoutElement.parentNode.removeChild(router.layoutElement);
-        }
+        _removeActiveLayout();
         return document.body.append(router.pageElement);
     }
 
@@ -70,12 +71,17 @@ export function _switchPage(Layout, Page, router) {
     // if not, remove the old one and add the new one
     // add the page to the given "page" slot
     const layout = Layout();
-    if (layout !== router.layoutElement) {
-        if (router.layoutElement instanceof HTMLElement) {
-            router.layoutElement.parentNode.removeChild(router.layoutElement);
-        }
-        router.layoutElement = layout;
-        document.body.append(router.layoutElement);
+    if (layout !== activeLayout) {
+        _removeActiveLayout();
+        activeLayout = layout;
+        document.body.append(activeLayout);
     }
     layout.slots.page(router.pageElement);
+}
+
+function _removeActiveLayout() {
+    if (activeLayout instanceof HTMLElement) {
+        activeLayout.parentNode.removeChild(activeLayout);
+        activeLayout = undefined;
+    }
 }

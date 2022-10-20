@@ -44,5 +44,14 @@ const router = Router({
 });
 ```
 
-### TODO
+## API
+
+### Page Element
+The router instance has a property holding the current page HTML element.
+```javascript
+const router = Router(/* ... */);
+router.pageElement; // the pages HTML element currently rendered
+```
+
+## TODO
 - [ ] Pass URL and query params to the page constructor
