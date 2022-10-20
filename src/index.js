@@ -14,7 +14,7 @@ let activeLayout;
  */
 export function Router(config) {
     const router = new Navigo("/");
-    router.on(parseConfig(config));
+    router.on(_parseConfig(config));
     router.resolve();
     return router;
 }
@@ -24,11 +24,11 @@ export function Router(config) {
  * @param {RouterConfig} config 
  * @returns {Object}
  */
-function parseConfig(config) {
+export function _parseConfig(config) {
     const parsedConfig = {};
     Object.keys(config).forEach(path => {
-        parseConfig[path] = () => {
-            switchPage(config[path].layout, config[path].page);
+        parsedConfig[path] = () => {
+            _switchPage(config[path].layout, config[path].page);
         };
     });
     return parsedConfig;
@@ -40,7 +40,7 @@ function parseConfig(config) {
  * @param {HTMLElement} layout - the page is rendered into
  * @param {HTMLElement} page - the page root element to exchange
  */
-function switchPage(layout, page) {
+export function _switchPage(layout, page) {
     if (layout !== activeLayout) {
         activeLayout = layout;
         document.body.innerHTML = "";
