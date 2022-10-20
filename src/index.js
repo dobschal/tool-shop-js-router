@@ -3,6 +3,8 @@
  */
 import Navigo from "navigo";
 
+export { RouterLink } from "./RouterLink.js";
+
 let activeLayout;
 
 /**
