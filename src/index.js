@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} RouterConfig
  * @property {{ [string]: { before: (() => void) => void, after: () => void }}} hooks
- * @property {{ [string]: { layout: () => HTMLElement, page: () => HTMLElement }}} routes
+ * @property {{ [string]: { layout: () => HTMLElement, page: () => HTMLElement } | () => HTMLElement}} routes
  */
 import Navigo from "navigo";
 
@@ -12,14 +12,14 @@ let activeLayout, activePage;
 /**
  * Applies some special route handling and returns an instance of the Navigo router.
  * @param {RouterConfig} config 
- * @returns {Navigo}
+ * @returns {Navigo & { pageElement: HTMLElement, layoutElement: HTMLElement }}
  */
 export function Router(config) {
     const router = new Navigo("/");
     if ("hooks" in config) {
         router.hooks(config.hooks);
     }
-    router.on(_parseRoutesConfig(config.routes));
+    router.on(_parseRoutesConfig(config.routes, router));
     router.resolve();
     return router;
 }
@@ -27,13 +27,18 @@ export function Router(config) {
 /**
  * Parse our custom router config to the Navigo Router config.
  * @param {RouterConfig} config 
+ * @param {Navigo} router
  * @returns {Object}
  */
-export function _parseRoutesConfig(config) {
+export function _parseRoutesConfig(config, router) {
     const parsedConfig = {};
     Object.keys(config).forEach(path => {
         parsedConfig[path] = () => {
-            _switchPage(config[path].layout, config[path].page);
+            if (typeof config[path] === "function") {
+                _switchPage(undefined, config[path], router);
+            } else {
+                _switchPage(config[path].layout, config[path].page, router);
+            }
         };
     });
     return parsedConfig;
@@ -44,9 +49,9 @@ export function _parseRoutesConfig(config) {
  * The layout remains if it is the same as before.
  * @param {() => HTMLElement} [Layout] - the page is rendered into, if not set, the page is added to the body directly
  * @param {() => HTMLElement} Page - the page root element to exchange
+ * @param {Navigo} router
  */
-export function _switchPage(Layout, Page) {
-
+export function _switchPage(Layout, Page, router) {
 
     // Remove current active page
     if (activePage instanceof HTMLElement) {
