@@ -16,8 +16,8 @@ describe("Router", () => {
             },
             routes: {
                 "*": {
-                    page: Widget(),
-                    layout: Widget({
+                    page: Widget,
+                    layout: () => Widget({
                         slot: "page"
                     })
                 }
@@ -30,8 +30,8 @@ describe("Router", () => {
         const router = Router({
             routes: {
                 "*": {
-                    page: Widget(),
-                    layout: Widget({
+                    page: Widget,
+                    layout: () => Widget({
                         slot: "page"
                     })
                 }
@@ -44,10 +44,10 @@ describe("Router", () => {
         Router({
             routes: {
                 "*": {
-                    page: Widget({
+                    page: () => Widget({
                         text: "yeah"
                     }),
-                    layout: Widget({
+                    layout: () => Widget({
                         slot: "page"
                     })
                 }
@@ -60,7 +60,7 @@ describe("Router", () => {
         Router({
             routes: {
                 "*": {
-                    page: Widget({
+                    page: () => Widget({
                         text: "yeah"
                     })
                 }
@@ -72,12 +72,12 @@ describe("Router", () => {
     it("should parse the config correctly", () => {
         const config = {
             "about": {
-                layout: Widget(),
-                page: Widget()
+                layout: Widget,
+                page: Widget
             },
             "*": {
-                layout: Widget(),
-                page: Widget()
+                layout: Widget,
+                page: Widget
             }
         };
         const parsedConfig = _parseRoutesConfig(config);

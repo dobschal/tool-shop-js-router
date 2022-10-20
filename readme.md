@@ -16,3 +16,33 @@ Install with [NPM](https://nodejs.dev/en/) using your CLI:
 ```bash
 npm install --save tool-shop-js-router
 ```
+
+### Usage
+Example for the usage of the Router:
+```javascript
+// Router returns an instance of the Navigo Router
+const router = Router({
+    hooks: {
+        before(done) {
+            // ... do something before each page is rendered
+            done();
+        }
+    },
+    routes: {
+        "/about": {
+            page: AboutPage,
+            // layout is optional. If not set, 
+            // the page is rendered to the body tag directly.
+            layout: DefaultLayout 
+        },
+        // default page
+        "*": { 
+            page: HomePage,
+            layout: DefaultLayout
+        }
+    }
+});
+```
+
+### TODO
+- [ ] Pass URL and query params to the page constructor
